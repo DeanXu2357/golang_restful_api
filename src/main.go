@@ -37,7 +37,23 @@ func main() {
     })
     r.GET("/person/", getAllPerson)
     r.GET("/person/:id", getPerson)
+    r.POST("/person", createPerson)
     r.Run()
+}
+
+func createPerson(c *gin.Context) {
+    var person Person
+    c.BindJSON(&person)
+
+    // db.Create(&person)
+    // c.JSON(200, person)
+
+    if dbm := db.Create(&person); dbm.Error != nil {
+        c.AbortWithStatus(404)
+        fmt.Println(dbm.Error)
+    } else {
+        c.JSON(200, person)
+    }
 }
 
 func getAllPerson(c *gin.Context) {
