@@ -13,7 +13,7 @@ var err error
 
 type Person struct {
     ID uint `json:"id"`
-    FisrtName string `json:"firstname"`
+    FirstName string `json:"firstname"`
     LastName string `json:"lastname"`
 }
 
@@ -35,7 +35,8 @@ func main() {
             "message": "hello world",
         })
     })
-    r.GET("/person", getAllPerson)
+    r.GET("/person/", getAllPerson)
+    r.GET("/person/:id", getPerson)
     r.Run()
 }
 
@@ -46,6 +47,17 @@ func getAllPerson(c *gin.Context) {
     } else {
         c.AbortWithStatus(404)
         fmt.Println(err)
+    }
+}
+
+func getPerson(c *gin.Context) {
+    id := c.Params.ByName("id")
+    var person Person
+    if err := db.Where("id = ?", id).First(&person).Error; err != nil {
+        c.AbortWithStatus(404)
+        fmt.Println(err)
+    } else {
+        c.JSON(200, person)
     }
 }
 
