@@ -21,7 +21,9 @@ func main() {
     p1 := Person{FirstName: "John", LastName: "Doe"}
     p2 := Person{FirstName: "Jane", LastName: "Smith"}
 
-    db.Create(&p1)
+    if dbm := db.Create(&p1); dbm.Error != nil{
+        fmt.Println(dbm.Error)
+    }
     var p3 Person // identify a Person type for us to store the results in
     db.First(&p3) // Find the first record in the Database and store it in p3
 
